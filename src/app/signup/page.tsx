@@ -1,51 +1,37 @@
-import styles from './page.module.scss'
+"use client"
+import Image from "next/image"
+import Link from "next/link"
+import styles from '../page.module.scss'
 import logoImg from '/public/logo.png'
-import Image from 'next/image'
-import Link from 'next/link'
 import { api } from '@/services/api'
 import { redirect } from 'next/navigation'
-import { cookies } from 'next/headers'
 
-export default function Page(){
+export default function Signup(){
 
-  async function handleLogin(formData: FormData){
-    "use server"
+  async function handleRegister(formData: FormData){
 
+    const name = formData.get("name")
     const email = formData.get("email")
     const password = formData.get("password")
 
-    if(email === "" || password === ""){
+    if( name === "" || email === "" || password === ""){
+      console.log("PREENCHA TODOS OS CAMPOS")
       return;
     }
 
     try{
-
-      const response = await api.post("/session", {
+      await api.post("/users", {
+        name,
         email,
         password
       })
 
-      if(!response.data.token){
-        return;
-      }
-
-      console.log(response.data);
-
-      const expressTime = 60 * 60 * 24 * 30 * 1000;
-      cookies().set("session", response.data.token, {
-        maxAge: expressTime,
-        path: "/",
-        httpOnly: false,
-        secure: process.env.NODE_ENV === "production"
-      })
-
     }catch(err){
-      console.log(err);
-      return;
+      console.log("error")
+      console.log(err)
     }
 
     redirect("/dashboard")
-
   }
 
   return(
@@ -57,7 +43,16 @@ export default function Page(){
         />
 
         <section className={styles.login}>
-          <form action={handleLogin}>
+          <h1>Criando sua conta</h1>
+          <form action={handleRegister}>
+            <input 
+              type="text"
+              required
+              name="name"
+              placeholder="Digite seu nome..."
+              className={styles.input}
+            />
+
             <input 
               type="email"
               required
@@ -75,17 +70,17 @@ export default function Page(){
             />
 
             <button type="submit" className={styles.button}>
-              Acessar
+              Cadastrar
             </button>
           </form>
 
-          <Link href="/signup" className={styles.text}>
-            Não possui uma conta? Cadastre-se
+          <Link href="/" className={styles.text}>
+            Já possui uma conta? Faça o login
           </Link>
 
         </section>
 
-      </div>      
+      </div> 
     </>
   )
 }
