@@ -14,7 +14,8 @@ export default function Page(){
     const email = formData.get("email")
     const password = formData.get("password")
 
-    if(email === "" || password === ""){
+    if (!email || !password) {
+      console.log("Email e senha são obrigatórios.");
       return;
     }
 

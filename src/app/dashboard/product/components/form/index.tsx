@@ -1,6 +1,6 @@
 "use client"
 
-import { ChangeEvent, useState } from 'react'
+import { ChangeEvent, useState, type FormEvent } from 'react'
 import styles from './styles.module.scss'
 import { UploadCloud } from 'lucide-react'
 import Image from 'next/image'
@@ -24,42 +24,40 @@ export function Form({ categories }: Props ){
   const [image, setImage] = useState<File>()
   const [previewImage, setPreviewImage] = useState("")
 
-  async function handleRegisterProduct(formData: FormData){
-
-    const categoryIndex = formData.get("category")
-    const name = formData.get("name")
-    const price = formData.get("price")
-    const description = formData.get("description")
-
-    if(!name || !categoryIndex || !price || !description || !image){
-      toast.warning("Preencha todos os campos!")
+  async function handleRegisterProduct(event: FormEvent) {
+    event.preventDefault();  // Evitar comportamento padrão do form
+  
+    const formData = new FormData(event.target as HTMLFormElement);
+  
+    const categoryIndex = formData.get("category");
+    const name = formData.get("name");
+    const price = formData.get("price");
+    const description = formData.get("description");
+  
+    if(!name || !categoryIndex || !price || !description || !image) {
+      toast.warning("Preencha todos os campos!");
       return;
     }
-
-    const data = new FormData();
-
-    data.append("name", name)
-    data.append("price", price)
-    data.append("description", description)
-    data.append("category_id", categories[Number(categoryIndex)].id)
-    data.append("file", image)
-
+  
+    formData.append("category_id", categories[Number(categoryIndex)].id);
+    formData.append("file", image);
+  
     const token = getCookieClient();
-
-    await api.post("/product", data, {
-      headers:{
-        Authorization: `Bearer ${token}`
+  
+    await api.post("/product", formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'multipart/form-data' // Assegura o envio correto dos dados
       }
     })
-    .catch((err) => {
-      console.log(err);
-      toast.warning("Falha ao cadastrar esse produto!")
-      return;
+    .then(() => {
+      toast.success("Produto registrado com sucesso!");
+      router.push("/dashboard");
     })
-
-    toast.success("Produto registrado com sucesso!")
-    router.push("/dashboard")
-
+    .catch((err) => {
+      console.error(err);
+      toast.warning("Falha ao cadastrar esse produto!");
+    });
   }
 
   function handleFile(e: ChangeEvent<HTMLInputElement>){
@@ -82,7 +80,7 @@ export function Form({ categories }: Props ){
     <main className={styles.container}>
       <h1>Novo produto</h1>
 
-      <form className={styles.form} action={handleRegisterProduct}>
+      <form className={styles.form} onSubmit={handleRegisterProduct}>
 
         <label className={styles.labelImage}>
           <span>
