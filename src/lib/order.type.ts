@@ -5,4 +5,5 @@ export interface OrderProps{
   name: string;
   draft: boolean;
   status: boolean;
+  created_at?: string;
 }

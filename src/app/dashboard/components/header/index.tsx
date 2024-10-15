@@ -9,36 +9,40 @@ import { deleteCookie } from 'cookies-next'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 
-export function Header(){
+export function Header() {
   const router = useRouter();
 
-  async function handleLogout(){
-    deleteCookie("session", { path: "/" } )
-    toast.success("Logout feito com sucesso!")
-    
-    router.replace("/")
+  async function handleLogout() {
+    deleteCookie("session", { path: "/" });
+    toast.success("Logout feito com sucesso!");
+
+    router.replace("/");
   }
 
-  return(
+  return (
     <header className={styles.headerContainer}>
       <div className={styles.headerContent}>
         <Link href="/dashboard">
           <Image
-            alt="Logo Sujeito Pizza"
+            alt="Logo"
             src={logoImg}
             width={320}
             height={60}
             priority={true}
             quality={100}
+            className={styles.imageLogo} 
           />
         </Link>
 
-        <nav>
+        <nav className={styles.nav}>
           <Link href="/dashboard/category">
             Categoria
           </Link>
           <Link href="/dashboard/product">
             Produto
+          </Link>
+          <Link href="/dashboard/order-history">
+            Histórico de Pedidos
           </Link>
 
           <form action={handleLogout}>

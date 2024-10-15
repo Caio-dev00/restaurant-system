@@ -12,7 +12,6 @@ async function getOrders(): Promise<OrderProps[] | []>{
         Authorization: `Bearer ${token}`
       }
     })
-
     return response.data || []
 
   }catch(err){

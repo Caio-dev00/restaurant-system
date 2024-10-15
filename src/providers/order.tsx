@@ -25,6 +25,7 @@ export interface OrderItemProps{
     name: string | null;
     draft: boolean;
     status: boolean;
+    createdAt?: string;
   }
 }
 
@@ -48,7 +49,6 @@ export function OrderProvider({ children }: OrderProviderProps){
   const router = useRouter();
 
   async function onRequestOpen(order_id: string){
-    // console.log(order_id);
 
     const token = getCookieClient();
 
@@ -69,7 +69,6 @@ export function OrderProvider({ children }: OrderProviderProps){
   function onRequestClose(){
     setIsOpen(false);
   }
-
 
   async function finishOrder(order_id: string){
     const token = getCookieClient();

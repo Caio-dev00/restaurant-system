@@ -1,7 +1,6 @@
 import styles from './styles.module.scss';
 import { CategoryForm } from './categoryForm';
 import { api } from '@/services/api';
-import { redirect } from 'next/navigation';
 import { getCookieServer } from '@/lib/cookieServer';
 
 export default function Category() {

@@ -55,6 +55,7 @@ export default function Page(){
         <Image
           src={logoImg}
           alt="Logo da pizzaria"
+          className={styles.imageLogo}
         />
 
         <section className={styles.login}>
